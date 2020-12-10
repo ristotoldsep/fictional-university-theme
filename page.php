@@ -24,15 +24,32 @@
         </div>
     <?php } 
   ?>  
- 
-    
-   <!--  <div class="page-links">
-      <h2 class="page-links__title"><a href="#">About Us</a></h2>
+
+   <?php 
+    $testArray = get_pages(array(
+      'child_of' => get_the_ID()
+    ));
+
+    if ($Parent or $testArray) { ?>
+    <div class="page-links">
+      <h2 class="page-links__title"><a href="<?php echo get_permalink($Parent); ?>"><?php echo get_the_title($Parent); ?></a></h2>
       <ul class="min-list">
-        <li class="current_page_item"><a href="#">Our History</a></li>
-        <li><a href="#">Our Goals</a></li>
+        <?php
+          if ($Parent) {
+            $findChildrenOf = $Parent;
+          } else {
+            $findChildrenOf = get_the_ID();
+          }
+
+          wp_list_pages(array(
+            'title_li' => NULL,
+            'child_of' => $findChildrenOf,
+            'sort_column' => 'menu_order' //Can add custom order from admin dashboard!!
+          ));
+        ?>
       </ul>
-    </div> -->
+    </div>
+    <?php } ?>
 
     <div class="generic-content">
       <?php the_content(); ?>
