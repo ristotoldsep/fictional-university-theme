@@ -10,10 +10,14 @@
 
     add_action('wp_enqueue_scripts', 'university_files'); /* telling WP to load files, running uni files function!*/
 
-    function university_features() {
-        add_theme_support('title-tag');
+    function university_features() { 
+        /* register_nav_menu('headerMenuLocation', 'Header Menu Location'); //to register a menu so "menus" tab would be visible from admin screen
+        register_nav_menu('footerLocationOne', 'Footer Location One'); //Footer menu 1 (NAMES ARE RANDOMLY SELECTED!!!)
+        register_nav_menu('footerLocationTwo', 'Footer Location Two'); //Footer menu 2 */
+
+        add_theme_support('title-tag'); //Adds title to titlebar!
     }
 
-    add_action('after_setup_theme', 'university_features');
+    add_action('after_setup_theme', 'university_features'); //telling wp to run features function
 
 ?>
