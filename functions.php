@@ -32,19 +32,6 @@
     }
 
     add_action('after_setup_theme', 'university_features'); //telling wp to run features function
-    //==========================
-    //CREATING CUSTOM POST TYPES
-    //==========================
-    function university_post_types() {
-        register_post_type('event', array( //event, is the new type name
-            'public' => true, //Will make the post type visible to editors and viewers
-            'labels' => array(
-                'name' => 'Events'
-            ),
-            'menu_icon' => 'dashicons-calendar-alt'
-        ));
-    }
-
-    add_action('init', 'university_post_types'); //Telling WP to run post types function
-    //==========================
+    
+    //POST TYPE FX WAS PREVIOSLY HERE, BUT MOVED TO MU-PLUGINS FOLDER
 ?>
