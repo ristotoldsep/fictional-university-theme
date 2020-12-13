@@ -8,8 +8,8 @@
     <body <?php body_class()?>>
         <header class="site-header">
       <div class="container">
-        <h1 class="school-logo-text float-left">
-          <a href="<?php echo site_url()?>"><strong>Fictional</strong> University</a>
+        <h1 class="school-logo-text float-left" style="font-weight: 700;">
+          <a href="<?php echo site_url()?>"><strong>TAL</strong>TECH</a>
         </h1>
         <span class="js-search-trigger site-header__search-trigger"><i class="fa fa-search" aria-hidden="true"></i></span>
         <i class="site-header__menu-trigger fa fa-bars" aria-hidden="true"></i>
@@ -19,9 +19,9 @@
               <li <?php if (is_page('about-us') or wp_get_post_parent_id(0) == 17) 
               echo 'class="current-menu-item"' ?>><a href="<?php echo site_url('/about-us')?>">About Us</a></li>
               <li><a href="#">Programs</a></li>
-              <li><a href="<?php echo site_url('/events')?>">Events</a></li>
+              <li <?php if (get_post_type() == 'event' /* Then obv related to events*/) echo 'class="current-menu-item"' ?>><a href="<?php echo get_post_type_archive_link('event'); ?>">Events</a></li>
               <li><a href="#">Campuses</a></li>
-              <li <?php if (get_post_type() == 'post' /* Then obv related to blog*/) echo 'class="current-menu-item"' ?>><a href="<?php echo site_url('/blog')?>">Blog</a></li>
+              <li <?php if (get_post_type() == 'post' /* Then obv related to blog*/) echo 'class="current-menu-item"' ?>><a href="<?php echo site_url('/blog'); ?>">Blog</a></li>
             </ul>
             <!-- Outputting a dynamic WP connected menu -->
             <?php 
