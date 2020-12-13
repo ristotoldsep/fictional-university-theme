@@ -1,7 +1,7 @@
 <?php get_header();  ?>
 
     <div class="page-banner">
-    <div class="page-banner__bg-image" style="background-image: url(<?php echo get_theme_file_uri('/images/taltech2.jpg') ?>);"></div>
+    <div class="page-banner__bg-image" style="background-image: url(<?php echo get_theme_file_uri('/images/events.jpg') ?>);"></div>
     <div class="page-banner__content container container--narrow">
       <h1 class="page-banner__title">
         <?php 
@@ -26,8 +26,12 @@
         the_post(); ?>
         <div class="event-summary">
                   <a class="event-summary__date t-center" href="<?php the_permalink();?>">
-                    <span class="event-summary__month"><?php the_time('M');?></span>
-                    <span class="event-summary__day"><?php the_time('d');?></span>
+                    <span class="event-summary__month"><?php 
+                        //the_field('event_date', ); //TO ADD OUR CUSTOM FIELD DATE 
+                        $eventDate = new DateTime(get_field('event_date')); //Creating new object that uses DateTime class as a blueprint
+                        echo $eventDate->format('M'); //Looking inside that object and printing out 3 letter month
+                      ?></span>
+                    <span class="event-summary__day"><?php echo $eventDate->format('d'); //Looking inside that object and printing out 3 letter month ?></span>
                   </a>
                   <div class="event-summary__content">
                     <h5 class="event-summary__title headline headline--tiny"><a href="<?php the_permalink();?>"><?php the_title();?></a></h5>

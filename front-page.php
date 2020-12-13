@@ -14,20 +14,43 @@
       <div class="full-width-split__one">
         <div class="full-width-split__inner">
           <h2 class="headline headline--small-plus t-center">Upcoming Events</h2>
-            
+            <!-- CUSTOM QUERY FOR CUSTOM FIELD -->
+            <!-- ============================= -->
             <?php 
-              $homepageEvents = new WP_Query(array(
-                'posts_per_page' => 2, //SHOWING ONLY 2 EVENTS
-                'post_type' => 'event' //TELLING DB WHICH POST TYPE WE WANT
+              $today = date('Ymd'); //Variable for todays date
+              $homepageEvents = new WP_Query(array( //Creating a new object from wp query class
+                'posts_per_page' => 2, //SHOWING ONLY 2 EVENTS (for example -1 returns all that meets these requirements)
+                'post_type' => 'event', //TELLING DB WHICH POST TYPE WE WANT
+                'meta_key' => 'event_date', //Telling wp the custom field we are interested in
+                'orderby' => 'meta_value_num', //title = alphabetically, post_date = adding order, rand = randomly
+                'order' => 'ASC', //also DESC
+                'meta_query' => array( //FOR FILTERING DATES (OLD DATES DISAPPEAR)
+                  array( //ONLY RETURN POSTS THAT ARE GREATER THAN OR EQUAL OF TODAYS DATE!
+                    'key' => 'event_date', //event_date = Custom field name in dashboard
+                    'compare' => '>=',
+                    'value' => $today,
+                    'type' => 'numeric'
+                  )
+                )
               ));
-
+                //Returning 2 events and showing them in order (Only dates that are today or in the future)
                 while ($homepageEvents->have_posts()) { 
                 $homepageEvents->the_post(); ?>
                 
                   <div class="event-summary">
                   <a class="event-summary__date t-center" href="<?php the_permalink();?>">
-                    <span class="event-summary__month"><?php the_time('M');?></span>
-                    <span class="event-summary__day"><?php the_time('d');?></span>
+                    <span class="event-summary__month">
+                      <?php 
+                        //the_field('event_date', ); //TO ADD OUR CUSTOM FIELD DATE 
+                        $eventDate = new DateTime(get_field('event_date')); //Creating new object that uses DateTime class as a blueprint
+                        echo $eventDate->format('M'); //Looking inside that object and printing out 3 letter month
+                      ?>
+                    </span>
+                    <span class="event-summary__day">
+                      <?php 
+                        echo $eventDate->format('d'); //Looking inside that object and printing out day number
+                      ?>
+                    </span>
                   </a>
                   <div class="event-summary__content">
                     <h5 class="event-summary__title headline headline--tiny"><a href="<?php the_permalink();?>"><?php the_title();?></a></h5>
