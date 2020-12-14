@@ -18,7 +18,7 @@
         //wp_enqueue_style('university_main_styles', get_stylesheet_uri()); //REMOVED AFTER NODE AUTOMATION //Loading CSS file with WP function
     
     }
-
+    //First is wp function, second is our made up name
     add_action('wp_enqueue_scripts', 'university_files'); /* telling WP to load files, running uni files function!*/
     //==========================
     //ADDING TITLE TAG
@@ -33,5 +33,24 @@
 
     add_action('after_setup_theme', 'university_features'); //telling wp to run features function
     
-    //POST TYPE FX WAS PREVIOSLY HERE, BUT MOVED TO MU-PLUGINS FOLDER
+    //POST TYPE FX WAS PREVIOSLY HERE, BUT MOVED TO MU-PLUGINS FOLDER and university-post-types.php file
+
+    function university_adjust_queries($query) { //Manipulating default URL based queries!!!
+       if (!is_admin() AND is_post_type_archive('event') AND $query->is_main_query()) { //Only when on front end and event archive and is default, not custom query!! 
+            $today = date('Ymd'); //Variable for todays date 
+            $query->set('meta_key', 'event_date');
+            $query->set('orderby', 'meta_value_num');;
+            $query->set('order', 'ASC');
+            $query->set('meta_query', array( //FOR FILTERING DATES (OLD DATES DISAPPEAR, ONLY SHOW LATEST)
+                  array( //ONLY RETURN POSTS THAT ARE GREATER THAN OR EQUAL OF TODAYS DATE!
+                    'key' => 'event_date', //event_date = Custom field name in dashboard
+                    'compare' => '>=',
+                    'value' => $today,
+                    'type' => 'numeric'
+                  )
+                  ));
+       }
+    }   
+
+    add_action('pre_get_posts', 'university_adjust_queries');
 ?>

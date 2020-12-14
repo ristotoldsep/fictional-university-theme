@@ -12,18 +12,37 @@
         if (is_author()) {
            echo 'Posts by: '; the_author();
         } */?>
-        All Events
+        Past Events
       </h1>
       <div class="page-banner__intro">
-        <p>See what is going on in our campus.</p>
+        <p>A recap of our past events. </p>
       </div>
     </div>  
   </div>
 
     <div class="container container--narrow page-section"> 
     <?php 
-      while(have_posts()) {
-        the_post(); ?>
+              $today = date('Ymd'); //Variable for todays date
+              $pastEvents = new WP_Query(array( //Creating a new object from wp query class
+                'paged' => get_query_var('paged', 1 ), //TELLS THE CUSTOM QUERY WHICH PAGE NUMBER THE RESULT SHOULD BE ON, gets the number from url, if no number(probably 1st page)
+                //'posts_per_page' => 1,
+                'post_type' => 'event', //TELLING DB WHICH POST TYPE WE WANT
+                'meta_key' => 'event_date', //Telling wp the custom field we are interested in
+                'orderby' => 'meta_value_num', //title = alphabetically, post_date = adding order, rand = randomly
+                'order' => 'ASC', //also DESC
+                'meta_query' => array( //FOR FILTERING DATES (OLD DATES DISAPPEAR)
+                  array( //ONLY RETURN POSTS THAT ARE LESS THAN TODAYS DATE! (so in the past )
+                    'key' => 'event_date', //event_date = Custom field name in dashboard
+                    'compare' => '<',
+                    'value' => $today,
+                    'type' => 'numeric'
+                  )
+                )
+              ));
+
+        
+      while($pastEvents->have_posts()) {
+        $pastEvents->the_post(); ?>
         <div class="event-summary">
                   <a class="event-summary__date t-center" href="<?php the_permalink();?>">
                     <span class="event-summary__month"><?php 
@@ -40,10 +59,11 @@
                 </div>
       <?php }
       
-        echo paginate_links(); //PAGINATION LINKS AS EASY AS THAT!
+        echo paginate_links(array(
+            'total' => $pastEvents->max_num_pages
+        )); //PAGINATION LINKS AS EASY AS THAT!
     ?> 
-    <hr class="section-break">
-    <p>Also check out our <a href="<?php echo site_url('/past-events')?>">past events</a>.</p>
+
     </div>
 
 
