@@ -21,6 +21,37 @@
             </div>
 
             <?php 
+                //CUSTOM QUERIES FOR RELATED PROFESSORS AND SUBJECTS !!!!!!!!!!!!!!!!!!!!!!
+                //====================================
+              $relatedProfessors = new WP_Query(array( //Creating a new object from wp query class
+                'posts_per_page' => -1, //SHOWING ONLY 2 EVENTS (for example -1 returns all that meets these requirements)
+                'post_type' => 'professor', //TELLING DB WHICH POST TYPE WE WANT
+                'orderby' => 'title', //title = alphabetically, post_date = adding order, rand = randomly
+                'order' => 'ASC', //also DESC
+                'meta_query' => array( //FOR FILTERING DATES (OLD DATES DISAPPEAR)
+                  array( //ADDING SECOND QUERY FILTER HERE, ONLY SHOWING POSTS THAT ARE RELATED TO THIS PROGRAM
+                      'key' => 'related_programs', //if the array of related programs
+                      'compare' => 'LIKE', //CONTAINS
+                      'value' => '"'. get_the_id() .'"' //The currently opened program/major (and its ID)
+                  )
+                )
+              ));
+                
+              if ($relatedProfessors->have_posts()) {
+                echo '<hr class="section-break">';
+                echo '<h2 class="headline headline--medium">' .get_the_title(). ' Professors</h2>';
+
+                //Returning 2 events and showing them in order (Only dates that are today or in the future)
+                while ($relatedProfessors->have_posts()) { 
+                $relatedProfessors->the_post(); ?>
+                
+                <li><a href="<?php the_permalink(); ?>"><?php the_title(); ?><?php the_title(); ?></a></li>
+              <?php }
+              }
+              //====================
+              wp_reset_postdata(); //SO EVENTS WOULD NOT DISAPPEAR //Because relates professors changes the page ID, can check with the_ID();
+              //====================
+
               $today = date('Ymd'); //Variable for todays date
               $homepageEvents = new WP_Query(array( //Creating a new object from wp query class
                 'posts_per_page' => 2, //SHOWING ONLY 2 EVENTS (for example -1 returns all that meets these requirements)
