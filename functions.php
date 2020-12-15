@@ -27,8 +27,11 @@
         /* register_nav_menu('headerMenuLocation', 'Header Menu Location'); //to register a menu so "menus" tab would be visible from admin screen
         register_nav_menu('footerLocationOne', 'Footer Location One'); //Footer menu 1 (NAMES ARE RANDOMLY SELECTED!!!)
         register_nav_menu('footerLocationTwo', 'Footer Location Two'); //Footer menu 2 */
-
+        
         add_theme_support('title-tag'); //Adds title to titlebar!
+        add_theme_support('post-thumbnails'); //Enables adding default thumbnails and featured images!! //but only for blog posts by default
+        add_image_size('professorLandscape', 300, 230, true); //Naming the custom image size, width px, height px, do you want to crop image (T/F)?
+        add_image_size('professorPortrait', 280, 450, true); //Naming the custom image size, width px, height px, do you want to crop image (T/F)?
     }
 
     add_action('after_setup_theme', 'university_features'); //telling wp to run features function
