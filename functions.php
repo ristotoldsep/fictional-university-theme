@@ -36,6 +36,13 @@
     //POST TYPE FX WAS PREVIOSLY HERE, BUT MOVED TO MU-PLUGINS FOLDER and university-post-types.php file
 
     function university_adjust_queries($query) { //Manipulating default URL based queries!!!
+        //FOR PROGRAMS ORDERING IN ALL PROGRAMS ARCHIVE
+        if(!is_admin() AND is_post_type_archive('program') AND is_main_query()) {
+            $query->set('orderby', 'title');
+            $query->set('order', 'ASC');
+            $query->set('posts_per_page', -1);
+        }
+        //FOR DATE FILTERING ON EVENTS ARCHIVE
        if (!is_admin() AND is_post_type_archive('event') AND $query->is_main_query()) { //Only when on front end and event archive and is default, not custom query!! 
             $today = date('Ymd'); //Variable for todays date 
             $query->set('meta_key', 'event_date');
