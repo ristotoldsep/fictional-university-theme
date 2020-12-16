@@ -1,5 +1,44 @@
 <?php 
     //==========================
+    //CUSTOM PAGE BANNER FUNCTION (takes array as arguments ($args))
+    //==========================
+    function pageBanner ($args = NULL) {
+        if (!$args['title']) { //If no title gets passed, take the default WordPress one!!!
+            $args['title'] = get_the_title();
+        }
+
+        if (!$args['subtitle']) { //If no subtitle gets passed, take the default WordPress one!!!
+            $args['subtitle'] = get_field('page_banner_subtitle');
+        }
+
+        if (!$args['photo']) { //If no photo is passed from code argument
+            if(get_field('page_banner_background_image')) { //If there is a custom page banner inserted from dashboard
+                $args['photo'] = get_field('page_banner_background_image')['sizes']['pageBanner'];
+            } else {
+                $args['photo'] = get_theme_file_uri('/images/taltech2.jpg');
+            }
+            
+        }
+    ?>
+        <div class="page-banner">
+            <div class="page-banner__bg-image" style="background-image: url(
+                <?php 
+                /* echo get_theme_file_uri('/images/taltech3.jpg') */ 
+                /* $pageBannerImage = get_field('page_banner_background_image');
+                echo $pageBannerImage['sizes']['pageBanner']; */
+                echo $args['photo'];
+                ?>);">
+            </div>
+                <div class="page-banner__content container container--narrow">
+                     <h1 class="page-banner__title"><?php echo $args['title'];  //the_title(); ?></h1>
+                        <div class="page-banner__intro">
+                            <p><?php echo $args['subtitle'];   //the_field('page_banner_subtitle'); ?></p>
+                        </div>
+                </div>  
+        </div>
+    <?php }
+
+    //==========================
     //FILE IMPORTS
     //==========================
     function university_files() { //Defining function with my own chosen name
@@ -21,7 +60,7 @@
     //First is wp function, second is our made up name
     add_action('wp_enqueue_scripts', 'university_files'); /* telling WP to load files, running uni files function!*/
     //==========================
-    //ADDING TITLE TAG
+    //ADDING TITLE TAG, DEFAULT THUMBNAILS & IMAGE SIZES
     //==========================
     function university_features() { 
         /* register_nav_menu('headerMenuLocation', 'Header Menu Location'); //to register a menu so "menus" tab would be visible from admin screen
@@ -39,8 +78,11 @@
     
     //POST TYPE FX WAS PREVIOSLY HERE, BUT MOVED TO MU-PLUGINS FOLDER and university-post-types.php file
 
-    function university_adjust_queries($query) { //Manipulating default URL based queries!!!
-        //FOR PROGRAMS ORDERING IN ALL PROGRAMS ARCHIVE
+    //==========================
+    //MANIPULATING DEFAULT URL BASED QUERIES
+    //==========================
+    function university_adjust_queries($query) { 
+        //FOR PROGRAMS ORDERING IN ALL PROGRAMS/MAJORS ARCHIVE
         if(!is_admin() AND is_post_type_archive('program') AND is_main_query()) {
             $query->set('orderby', 'title');
             $query->set('order', 'ASC');
