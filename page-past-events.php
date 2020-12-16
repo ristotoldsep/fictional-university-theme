@@ -49,7 +49,11 @@
 
         
       while($pastEvents->have_posts()) {
-        $pastEvents->the_post(); ?>
+        $pastEvents->the_post();
+        
+        get_template_part('template-parts/content-event');
+
+        /* ?>
         <div class="event-summary">
                   <a class="event-summary__date t-center" href="<?php the_permalink();?>">
                     <span class="event-summary__month"><?php 
@@ -64,7 +68,7 @@
                     <p><?php echo wp_trim_words(get_the_content(), 18); //first 18 words ?> <a href="<?php the_permalink();?>" class="nu gray">Learn more</a></p>
                   </div>
                 </div>
-      <?php }
+      <?php */ }
       
         echo paginate_links(array(
             'total' => $pastEvents->max_num_pages

@@ -99,7 +99,13 @@
 
                 //Returning 2 events and showing them in order (Only dates that are today or in the future)
                 while ($homepageEvents->have_posts()) { 
-                $homepageEvents->the_post(); ?>
+                $homepageEvents->the_post();
+                
+                //GETTING RID OF DUPLICATE CODE
+                /*ALSO CAN ADD SECOND ARGUMENT => get_template_part('template-parts/event', 'get_post_type()); , so it would be dynamic, [SEARCHES FOR content-event.php] */
+                get_template_part('template-parts/content-event');
+
+                /* ?>
                 
                   <div class="event-summary">
                   <a class="event-summary__date t-center" href="<?php the_permalink();?>">
@@ -126,7 +132,7 @@
                   } ?> <a href="<?php the_permalink();?>" class="nu gray">Learn more</a></p>
                   </div>
                 </div>
-              <?php }
+                <?php */ }
               }
 
             ?>
