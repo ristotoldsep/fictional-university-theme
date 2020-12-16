@@ -32,6 +32,7 @@
         add_theme_support('post-thumbnails'); //Enables adding default thumbnails and featured images!! //but only for blog posts by default
         add_image_size('professorLandscape', 300, 230, true); //Naming the custom image size, width px, height px, do you want to crop image (T/F)?
         add_image_size('professorPortrait', 280, 450, true); //Naming the custom image size, width px, height px, do you want to crop image (T/F)?
+        add_image_size('pageBanner', 1500, 350, true); //Naming the custom image size, width px, height px, do you want to crop image (T/F)?
     }
 
     add_action('after_setup_theme', 'university_features'); //telling wp to run features function
