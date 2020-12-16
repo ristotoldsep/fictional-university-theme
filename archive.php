@@ -1,11 +1,19 @@
-<?php get_header();  ?>
+<?php get_header();  
 
-    <div class="page-banner">
-    <div class="page-banner__bg-image" style="background-image: url(<?php echo get_theme_file_uri('/images/raamatukogu.jpg') ?>);"></div>
+pageBanner(array(
+  'title' => get_the_archive_title(), //WAS just the_archive_title() but we dont want it to echo anything (just return), so put get_ in front!
+  'subtitle' => get_the_archive_description(),
+  'photo' => get_theme_file_uri('/images/raamatukogu.jpg')
+
+));
+?>
+
+    <!-- <div class="page-banner">
+    <div class="page-banner__bg-image" style="background-image: url(<?php //echo get_theme_file_uri('/images/raamatukogu.jpg') ?>);"></div>
     <div class="page-banner__content container container--narrow">
       <h1 class="page-banner__title">
         <?php 
-            the_archive_title(); //New WP function, if I want to customize I can use the logic below
+            //the_archive_title(); //New WP function, if I want to customize I can use the logic below
         /* if (is_category()) { //CATEGORIES OR AUTHOR PAGES LOGIC
             single_cat_title(); //Outputting the category name
         }
@@ -14,10 +22,10 @@
         } */?>
       </h1>
       <div class="page-banner__intro">
-        <p><?php the_archive_description();?></p>
+        <p><?php //the_archive_description();?></p>
       </div>
     </div>  
-  </div>
+  </div> -->
 
     <div class="container container--narrow page-section"> 
     <?php 
