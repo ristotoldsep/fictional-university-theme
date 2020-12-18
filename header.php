@@ -20,7 +20,7 @@
               echo 'class="current-menu-item"' ?>><a href="<?php echo site_url('/about-us'); ?>">About Us</a></li>
               <li <?php if (get_post_type() == 'program' /* Then obv related to programs*/) echo 'class="current-menu-item"'; ?>><a href="<?php echo get_post_type_archive_link('program'); ?>">Programs</a></li>
               <li <?php if (get_post_type() == 'event' OR is_page('past-events') /* Then obv related to events*/) echo 'class="current-menu-item"'; ?>><a href="<?php echo get_post_type_archive_link('event'); ?>">Events</a></li>
-              <li><a href="#">Campuses</a></li>
+              <li <?php if (get_post_type() == 'institution' /* Then obv related to events*/) echo 'class="current-menu-item"'; ?>><a href="<?php echo get_post_type_archive_link('institution'); ?>">Campus</a></li>
               <li <?php if (get_post_type() == 'post' /* Then obv related to blog*/) echo 'class="current-menu-item"'; ?>><a href="<?php echo site_url('/blog'); ?>">Blog</a></li>
             </ul>
             <!-- Outputting a dynamic WP connected menu -->

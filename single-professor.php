@@ -22,11 +22,12 @@
             </div>
             <!-- DISPLAYING CUSTOM FIELDS!!!!!!!!!!!!!!!!!!!! -->
             <?php 
+                //DONT NEED A CUSTOM QUERY, HERE I CAN USE DEFAULT QUERY!
                 $relatedPrograms = get_field('related_programs');
                 //print_r($relatedPrograms);
 
                 if ($relatedPrograms) {
-                    echo '<hr class="section-break">';
+                echo '<hr class="section-break">';
                 echo '<h2 class="headline headline--medium">Subject(s) Taught</h2>';
                 echo '<ul class="link-list min-list">';
                 foreach($relatedPrograms as $program) { ?>

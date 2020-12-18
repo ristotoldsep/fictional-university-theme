@@ -90,6 +90,7 @@
               //'category_name' => 'test' //Only queries posts with test category
             )); //THIS IS WORDPRESS TEMPLATE CLASS THAT WE CAN ACCESS and create our own object! We have to tell this class what do we want to query! Wp does all the heavy lifting like db querys etc. Need to pass in array of arguments
 
+            //BLOG POSTS LIST
             while ($homepagePosts->have_posts()) {
               $homepagePosts->the_post(); ?>
               <div class="event-summary">

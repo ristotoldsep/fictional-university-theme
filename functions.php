@@ -45,7 +45,12 @@
         //wp_enqueue_script('university_main_javascript', get_theme_file_uri('/js/scripts-bundled.js'), NULL, '1.0', true); //REMOVED AFTER NODE AUTOMATION  /*for JS - WORDPRESS demands=> NULL (does this script depend on any other scripts?, 1.0 is the version number, true means that YES we want to load JS script in the bottom of the html) */
         wp_enqueue_style('custom-google-font', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
         wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'); //Here don't need to add https:
-        //php fx to check string inside of a string
+
+        //LOADS GOOGLE MAPS API
+        wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=<key>', NULL, '1.0', true); //ADDED AFTER AUTOMATION ONLY FOR DEVELOPMENT
+
+
+        //php fx to check string inside of a string, RUNNING APP LOCALLY VS PRODUCTION
         if (strstr($_SERVER['SERVER_NAME'], 'fictional-university.local')) { //IF TRUE = DEVELOPMENT FILES BUNDLED AND LOADED
             wp_enqueue_script('university_main_javascript', 'http://localhost:3000/bundled.js', NULL, '1.0', true); //ADDED AFTER AUTOMATION ONLY FOR DEVELOPMENT
         } else { //FILES BUNDLED FOR THE PUBLIC VIEW
@@ -82,6 +87,11 @@
     //MANIPULATING DEFAULT URL BASED QUERIES
     //==========================
     function university_adjust_queries($query) { 
+        //FOR INSTITUTION ORDERING IN CAMPUS ARCHIVE (So it would show all Map pins, not wp default 10)
+        if(!is_admin() AND is_post_type_archive('institution') AND is_main_query()) {
+            $query->set('posts_per_page', -1);
+        }
+        
         //FOR PROGRAMS ORDERING IN ALL PROGRAMS/MAJORS ARCHIVE
         if(!is_admin() AND is_post_type_archive('program') AND is_main_query()) {
             $query->set('orderby', 'title');
@@ -106,4 +116,16 @@
     }   
 
     add_action('pre_get_posts', 'university_adjust_queries');
+
+
+    //==========================
+    //FUNCTION FOR GOOGLE MAPS API
+    //==========================
+    function universityMapKey($api) {
+        $api['key'] = '<key>';
+        return $api;
+    }
+
+    add_filter('acf/fields/google_map/api', 'universityMapKey'); //acf = advanced custom fields
+
 ?>

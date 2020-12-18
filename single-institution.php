@@ -25,43 +25,59 @@
         
         <div class="container container--narrow page-section">
             <div class="metabox metabox--position-up metabox--with-home-link">
-                <p><a class="metabox__blog-home-link" href="<?php echo get_post_type_archive_link('program'); /* dynamic function, if we ever change url we don't also need to change it here*/?>"><i class="fa fa-home" aria-hidden="true"></i> All Programs</a> <span class="metabox__main"><?php the_title(); ?></span></p>
+                <p><a class="metabox__blog-home-link" href="<?php echo get_post_type_archive_link('institution'); /* dynamic function, if we ever change url we don't also need to change it here*/?>"><i class="fa fa-home" aria-hidden="true"></i> All Institutions</a> <span class="metabox__main"><?php the_title(); ?></span></p>
             </div>
 
             <div class="generic-content">
                 <?php the_content( );?>
             </div>
 
+            <div class="acf-map">
+                <?php 
+                    $mapLocation = get_field('map_location');
+                ?>
+
+                <div class="marker" data-lat="<?php echo $mapLocation['lat'] ?>" data-lng="<?php echo $mapLocation['lng'] ?>">
+                <h3><?php the_title(); ?></h3>
+                <?php echo $mapLocation['address']; ?>
+                </div>
+              <!--   <li><a href="<?php //the_permalink(); ?>">
+                
+                    the_title(); 
+                    $mapLocation = get_field('map_location');
+                    print_r($mapLocation);  
+                
+                </a></li> -->
+           
+        </div>
+
             <?php 
-                //CUSTOM QUERIES FOR RELATED PROFESSORS AND SUBJECTS !!!!!!!!!!!!!!!!!!!!!!
+                //CUSTOM QUERIES FOR RELATED PROGRAMS !!!!!!!!!!!!!!!!!!!!!!
                 //====================================
-              $relatedProfessors = new WP_Query(array( //Creating a new object from wp query class
+              $relatedPrograms = new WP_Query(array( //Creating a new object from wp query class
                 'posts_per_page' => -1, //SHOWING ALL PROFESSORS (for example -1 returns all that meets these requirements)
-                'post_type' => 'professor', //TELLING DB WHICH POST TYPE WE WANT
+                'post_type' => 'program', //TELLING DB WHICH POST TYPE WE WANT
                 'orderby' => 'title', //title = alphabetically, post_date = adding order, rand = randomly
                 'order' => 'ASC', //also DESC
                 'meta_query' => array( //FOR FILTERING 
                   array( //ADDING SECOND QUERY FILTER HERE, ONLY SHOWING POSTS(professors) THAT ARE RELATED TO THIS PROGRAM
-                      'key' => 'related_programs', //if the array of related programs
+                      'key' => 'related_institution', //if the array of related programs
                       'compare' => 'LIKE', //CONTAINS
                       'value' => '"'. get_the_id() .'"' //The currently opened program/major (and its ID)
                   )
                 )
               ));
                 
-              if ($relatedProfessors->have_posts()) { //if the subject has related professors
+              if ($relatedPrograms->have_posts()) { //if the subject has related professors
                 echo '<hr class="section-break">';
-                echo '<h2 class="headline headline--medium">' .get_the_title(). ' Professors</h2>'; //Subject + professors
+                echo '<h2 class="headline headline--medium">' .get_the_title(). ' Programs</h2>'; //Subject + professors
                 //PROFESSOR IMAGES LIST 
-                echo '<ul class="professor-cards">';
-                while ($relatedProfessors->have_posts()) { 
-                $relatedProfessors->the_post(); ?>
+                echo '<ul class="min-list link-list">';
+                while ($relatedPrograms->have_posts()) { 
+                $relatedPrograms->the_post(); ?>
                 
-                <li class="professor-card__list-item">
-                    <a class="professor-card" href="<?php the_permalink(); ?>">
-                        <img class="professor-card__image" src="<?php the_post_thumbnail_url('professorLandscape'); //URL FOR THE IMAGE?>">
-                        <span class="professor-card__name"><?php the_title(); ?></span>
-                    </a>
+                <li>
+                    <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
                 </li>
               <?php }
               echo '</ul>';
@@ -70,10 +86,10 @@
               //====================
               wp_reset_postdata(); //SO EVENTS WOULD NOT DISAPPEAR //Because relates professors changes the page ID, can check with the_ID();
               //====================
-              //RELATED EVENTS LIST FOR THIS PROGRAM
+              //RELATED EVENTS LIST FOR THIS INSTITUTION
               $today = date('Ymd'); //Variable for todays date
-              $homepageEvents = new WP_Query(array( //Creating a new object from wp query class
-                'posts_per_page' => 2, //SHOWING ONLY 2 EVENTS (for example -1 returns all that meets these requirements)
+              $relatedEvents = new WP_Query(array( //Creating a new object from wp query class
+                'posts_per_page' => -1, //SHOWING ONLY 2 EVENTS (for example -1 returns all that meets these requirements)
                 'post_type' => 'event', //TELLING DB WHICH POST TYPE WE WANT
                 'meta_key' => 'event_date', //Telling wp the custom field we are interested in
                 'orderby' => 'meta_value_num', //title = alphabetically, post_date = adding order, rand = randomly
@@ -86,20 +102,20 @@
                     'type' => 'numeric'
                   ),
                   array( //ADDING SECOND QUERY FILTER HERE, ONLY SHOWING POSTS THAT ARE RELATED TO THIS PROGRAM
-                      'key' => 'related_programs', //if the array of related programs
+                      'key' => 'related_institution', //if the array of related programs
                       'compare' => 'LIKE', //CONTAINS
                       'value' => '"'. get_the_id() .'"' //The currently opened program/major (and its ID)
                   )
                 )
               ));
-                
-              if ($homepageEvents->have_posts()) {
+              //print_r($relatedEvents);
+              if ($relatedEvents->have_posts()) {
                 echo '<hr class="section-break">';
                 echo '<h2 class="headline headline--medium">Upcoming ' .get_the_title(). ' events</h2>';
 
                 //Returning 2 events and showing them in order (Only dates that are today or in the future)
-                while ($homepageEvents->have_posts()) { 
-                $homepageEvents->the_post();
+                while ($relatedEvents->have_posts()) { 
+                $relatedEvents->the_post();
                 
                 //GETTING RID OF DUPLICATE CODE
                 /*ALSO CAN ADD SECOND ARGUMENT => get_template_part('template-parts/event', 'get_post_type()); , so it would be dynamic, [SEARCHES FOR content-event.php] */
@@ -135,27 +151,10 @@
                 <?php */ }
               }
 
-              //====================
-              wp_reset_postdata(); //SO EVENTS WOULD NOT DISAPPEAR //Because relates professors changes the page ID, can check with the_ID();
-              //====================
-              $relatedInstitutions = get_field('related_institution');
-              //print_r($relatedInstitutions); //ARRAY!
-
-              if ($relatedInstitutions) {
-                echo '<hr class="section-break">';
-                echo '<h2 class="headline headline--medium">Related Institutions:</h2>';
-                echo '<ul class="link-list min-list">';
-
-                foreach($relatedInstitutions as $institution) { ?>
-                    <li><a href="<?php echo get_the_permalink($institution); ?>"><?php echo get_the_title($institution); ?></a></li>
-              <?php }
-                echo '</ul>'; 
-              }
-
             ?>
 
         </div>
         
     <?php }
 
- get_footer(); ?>
+ get_footer();?>
