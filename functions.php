@@ -54,9 +54,9 @@
         if (strstr($_SERVER['SERVER_NAME'], 'fictional-university.local')) { //IF TRUE = DEVELOPMENT FILES BUNDLED AND LOADED
             wp_enqueue_script('university_main_javascript', 'http://localhost:3000/bundled.js', NULL, '1.0', true); //ADDED AFTER AUTOMATION ONLY FOR DEVELOPMENT
         } else { //FILES BUNDLED FOR THE PUBLIC VIEW
-            wp_enqueue_script('our_vendors_js', get_theme_file_uri('/bundled-assets/vendors~scripts.8c97d901916ad616a264.js'), NULL, '1.0', true);
-            wp_enqueue_script('university_main_javascript', get_theme_file_uri('/bundled-assets/scripts.bc49dbb23afb98cfc0f7.js'), NULL, '1.0', true);
-            wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.bc49dbb23afb98cfc0f7.css'));
+            wp_enqueue_script('our_vendors_js', get_theme_file_uri('/bundled-assets/vendors~scripts.9678b4003190d41dd438.js'), NULL, '1.0', true);
+            wp_enqueue_script('university_main_javascript', get_theme_file_uri('/bundled-assets/scripts.f754162e98180e2897f0.js'), NULL, '1.0', true);
+            wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.f754162e98180e2897f0.css'));
         }
     
         //wp_enqueue_style('university_main_styles', get_stylesheet_uri()); //REMOVED AFTER NODE AUTOMATION //Loading CSS file with WP function
