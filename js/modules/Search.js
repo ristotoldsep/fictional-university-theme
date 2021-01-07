@@ -1,12 +1,14 @@
 import $ from 'jquery'; //ADDS JQUERY 
 
+//OOP JS FOR LIVE SEARCH
 //========================================================================
 class Search { //Creating the class
     //1. Constructor is used to describe and create/initiate our object
-    constructor() {//this refers to the current object, HERE I CAN INITIATE STATE!
+    constructor() {//this refers to the current object, HERE I CAN INITIATE STATE! (ORDEER DOES MATTER)
        /*  this.name = "Jane";
         this.eyecolor = "green";
         this.head = {}  */
+        this.addSearchHTML();
         this.openButton = $(".js-search-trigger");
         this.closeButton = $(".search-overlay__close");
         this.searchOverlay = $(".search-overlay");
@@ -34,14 +36,14 @@ class Search { //Creating the class
     typingLogic () {
         //Run only if search term wasn't the previous search (to avoid requests when using arrow keys etc...)
         if (this.searchField.val() != this.previousValue) { 
-            clearTimeout(this.typingTimer); //If typing has not stopped in 2 seconds, clear the timer variable
+            clearTimeout(this.typingTimer); //If typing has not stopped in 0.75 seconds, clear the timer variable
 
             if (this.searchField.val()) {
                 if(!this.isSpinnerVisible) { //Only show spinner, if it is not already visible
                     this.resultsDiv.html('<div class="spinner-loader"></div>');
                     this.isSpinnerVisible = true;
                 }
-                this.typingTimer = setTimeout(this.getResults.bind(this), 2000); //If 2 seconds has passed since last keypress, set timer!
+                this.typingTimer = setTimeout(this.getResults.bind(this), 750); //If 0.75 seconds has passed since last keypress, set timer and call results method!
             } else {
                 this.resultsDiv.html('');
                 this.isSpinnerVisible = false;
@@ -49,10 +51,31 @@ class Search { //Creating the class
         }
         this.previousValue = this.searchField.val();
     }
+    //JSON FETCH CALL
+    getResults () { //Method gets valled by typingTimer
 
-    getResults () {
-        this.resultsDiv.html("<h1>Testing hahaha</h1>");
-        this.isSpinnerVisible = false; //Reset state
+
+
+
+        /* this.resultsDiv.html("<h1>Testing hahaha</h1>");*/
+        // $.getJSON(url, fx) -> it wants an url, and a function what to do with the data
+        
+        //$.getJSON("http://fictional-university.local/wp-json/wp/v2/posts?search=" + this.searchField.val(), (data) => { // data gets passed from the API call to anonymous fx => converting JSON to html
+
+        $.getJSON(universityData.root_url + "/wp-json/wp/v2/posts?search=" + this.searchField.val(), (posts) => { /* MADE URL RELATIVE (DYNAMIC)!!! variable init in functions.php */ 
+            $.getJSON(universityData.root_url + "/wp-json/wp/v2/pages?search=" + this.searchField.val(), (pages) => {
+                const combinedResults = posts.concat(pages); //CONCAT COMBINES ARRAYS
+                this.resultsDiv.html(` 
+                    <h2 class="search-overlay__section-title">General Information</h2>
+
+                    ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches my brudda</p>'}
+    
+                     ${combinedResults.map((item) => `<li><a href="${item.link}">${item.title.rendered}</a></li>`).join('')}
+                    ${combinedResults.length ? '</ul>' : ''}
+                `);  
+                this.isSpinnerVisible = false; //Reset state 
+            })
+        });
     }
 
     //KEYPRESS FUNCTION
@@ -74,6 +97,10 @@ class Search { //Creating the class
     openOverlay() {
         this.searchOverlay.addClass("search-overlay--active");
         $("body").addClass("body-no-scroll"); //If search active, remove scrolling from bg
+         //this.resultsDiv.html(''); //Remove search results if opened/closed multiple times and results were previously there
+         this.searchField.val(''); //Setting the value to empty string each time opened
+       
+        setTimeout(() => { this.searchField.focus(); }, 301); //Setting timeout to give CSS time to load (otherwise the instant focus would not work)
         this.isOverlayOpen = true;
         //console.log(this.isOverlayOpen);
     }
@@ -84,7 +111,29 @@ class Search { //Creating the class
         this.isOverlayOpen = false;
         //console.log(this.isOverlayOpen);
     }
+
+    //Method for outputting the search overlay to the end of the body (append)!
+    addSearchHTML() {
+        $("body").append(` 
+             <!-- SEARCH OVERLAY -->
+            <div class="search-overlay"> <!-- ACTIVE class makes the search window appear (JS) -->
+                <div class="search-overlay__top">
+                <div class="container">
+                <i class="fa fa-search search-overlay__icon" aria-hidden="true"></i>
+                    <input type="text" class="search-term" placeholder="What are you looking for?" id="search-term">
+                    <i class="fa fa-window-close search-overlay__close" aria-hidden="true"></i>
+                </div>
+                </div>
+
+                <div class="container">
+                <div id="search-overlay__results">
+                    <h2></h2>
+                </div>
+                </div>
+            </div>
+        `);
     }
+}
         
 
 export default Search;

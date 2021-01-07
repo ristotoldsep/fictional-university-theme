@@ -39,15 +39,16 @@
     <?php }
 
     //==========================
-    //FILE IMPORTS
+    //FILE IMPORTS (css, js etc...)
     //==========================
     function university_files() { //Defining function with my own chosen name
+        
         //wp_enqueue_script('university_main_javascript', get_theme_file_uri('/js/scripts-bundled.js'), NULL, '1.0', true); //REMOVED AFTER NODE AUTOMATION  /*for JS - WORDPRESS demands=> NULL (does this script depend on any other scripts?, 1.0 is the version number, true means that YES we want to load JS script in the bottom of the html) */
         wp_enqueue_style('custom-google-font', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
         wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'); //Here don't need to add https:
 
         //LOADS GOOGLE MAPS API
-        wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=<key>', NULL, '1.0', true); //ADDED AFTER AUTOMATION ONLY FOR DEVELOPMENT
+        wp_enqueue_script('googleMap', '//maps.googleapis.com/maps/api/js?key=<key>', NULL, '1.0', true); 
 
 
         //php fx to check string inside of a string, RUNNING APP LOCALLY VS PRODUCTION
@@ -59,10 +60,15 @@
             wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.f754162e98180e2897f0.css'));
         }
     
-        //wp_enqueue_style('university_main_styles', get_stylesheet_uri()); //REMOVED AFTER NODE AUTOMATION //Loading CSS file with WP function
-    
+        //wp_enqueue_style('university_main_styles', get_stylesheet_uri()); //REMOVED AFTER NODE.js AUTOMATION //Loading CSS file with WP function
+        
+        //CREATING DYNAMIC flexible RELATIVE URL FOR API CALLS (creates variable universityData [check from chrome inspect element console bottom! & Search.js dynamic url in API call])
+        //Takes 3 arguments: 1) The js file u r trying to make flexible 2) made up variable 3) array
+        wp_localize_script('university_main_javascript', 'universityData', array(
+            'root_url' => get_site_url() //fx will return url for current WP installation
+        ));
     }
-    //First is wp function, second is our made up name
+    //First is wp function, second is our made up name = ACTION HOOKS
     add_action('wp_enqueue_scripts', 'university_files'); /* telling WP to load files, running uni files function!*/
     //==========================
     //ADDING TITLE TAG, DEFAULT THUMBNAILS & IMAGE SIZES
@@ -122,7 +128,7 @@
     //FUNCTION FOR GOOGLE MAPS API
     //==========================
     function universityMapKey($api) {
-        $api['key'] = '<key>';
+        $api['key'] = '<key>';  
         return $api;
     }
 
