@@ -1,5 +1,19 @@
 <?php 
     //==========================
+    //CUSTOMIZING THE REST API
+    //==========================
+    function university_custom_rest() {
+        //1st argument = post type that you want to customize
+        //2nd argument = second argument is whatever you want to name the new field (property to JSON)
+        //3rd argument = array that describes how we want to manage this field
+        register_rest_field('post', 'authorName', array(
+            'get_callback' => function() { return get_the_author(); }
+        ));
+    }
+
+    add_action('rest_api_init', 'university_custom_rest');
+
+    //==========================
     //CUSTOM PAGE BANNER FUNCTION (takes array as arguments ($args))
     //==========================
     function pageBanner ($args = NULL) {
@@ -42,7 +56,7 @@
     //FILE IMPORTS (css, js etc...)
     //==========================
     function university_files() { //Defining function with my own chosen name
-        
+
         //wp_enqueue_script('university_main_javascript', get_theme_file_uri('/js/scripts-bundled.js'), NULL, '1.0', true); //REMOVED AFTER NODE AUTOMATION  /*for JS - WORDPRESS demands=> NULL (does this script depend on any other scripts?, 1.0 is the version number, true means that YES we want to load JS script in the bottom of the html) */
         wp_enqueue_style('custom-google-font', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
         wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'); //Here don't need to add https:

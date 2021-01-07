@@ -54,28 +54,42 @@ class Search { //Creating the class
     //JSON FETCH CALL
     getResults () { //Method gets valled by typingTimer
 
+        // $.when(one, two).then((one, two) => { });
 
+        //USING SYNC AND ASYNC !!!!!!!!!!!!!!!!!
+        $.when( //FIRST GETTING BOTH JSON REQUESTS AT THE SAME TIME
+                $.getJSON(universityData.root_url + "/wp-json/wp/v2/posts?search=" + this.searchField.val()),
+                $.getJSON(universityData.root_url + "/wp-json/wp/v2/pages?search=" + this.searchField.val())
+        ).then((posts, pages) => { //WHEN REQ'S ARE DONE, SHOW SEARCH RESULTS
 
+                const combinedResults = posts[0].concat(pages[0]); /*CONCAT COMBINES ARRAYS, so all the post types. 
+                when req also passes other info to "then" than just JSON (like is req successful etc), so we use [0], which means we want only JSON data    */
+
+                this.resultsDiv.html(` 
+                        <h2 class="search-overlay__section-title">General Information</h2>
+
+                        ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches my brudda</p>'}
+                        
+                        ${combinedResults.map((item) => `<li><a href="${ item.link }">${ item.title.rendered }</a> ${ item.type == 'post' ? `by ${item.authorName}` : '' }</li>`).join('') } 
+
+                        ${combinedResults.length ? '</ul>' : ''}
+                    `);
+                this.isSpinnerVisible = false; //Reset state 
+            }, () => { //ERROR HANDLING 
+                this.resultsDiv.html('<h4>Unexpected error, please try again.</h4>');
+            }); 
 
         /* this.resultsDiv.html("<h1>Testing hahaha</h1>");*/
-        // $.getJSON(url, fx) -> it wants an url, and a function what to do with the data
+        // $.getJSON(url, fx) -> it wants an url, and a function what to do with the data == JQUERY METHOD!!!!!!!!!!!!! (json to html)
         
         //$.getJSON("http://fictional-university.local/wp-json/wp/v2/posts?search=" + this.searchField.val(), (data) => { // data gets passed from the API call to anonymous fx => converting JSON to html
 
-        $.getJSON(universityData.root_url + "/wp-json/wp/v2/posts?search=" + this.searchField.val(), (posts) => { /* MADE URL RELATIVE (DYNAMIC)!!! variable init in functions.php */ 
-            $.getJSON(universityData.root_url + "/wp-json/wp/v2/pages?search=" + this.searchField.val(), (pages) => {
-                const combinedResults = posts.concat(pages); //CONCAT COMBINES ARRAYS
-                this.resultsDiv.html(` 
-                    <h2 class="search-overlay__section-title">General Information</h2>
-
-                    ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches my brudda</p>'}
-    
-                     ${combinedResults.map((item) => `<li><a href="${item.link}">${item.title.rendered}</a></li>`).join('')}
-                    ${combinedResults.length ? '</ul>' : ''}
-                `);  
-                this.isSpinnerVisible = false; //Reset state 
-            })
-        });
+        //FIRST WAY OF SYNCHRONOUSLY RUNNING ALL THE API CALLS
+        // $.getJSON(universityData.root_url + "/wp-json/wp/v2/posts?search=" + this.searchField.val(), (posts) => { /* MADE URL RELATIVE (DYNAMIC)!!! variable init in functions.php */ 
+        //     $.getJSON(universityData.root_url + "/wp-json/wp/v2/pages?search=" + this.searchField.val(), (pages) => {
+                
+        //     });
+        // });
     }
 
     //KEYPRESS FUNCTION
