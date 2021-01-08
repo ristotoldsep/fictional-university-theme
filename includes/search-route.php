@@ -43,8 +43,10 @@
             
             if (get_post_type() == 'post' OR get_post_type() == 'page') {
                 array_push($results['generalInfo'], array( //Output the combined array of objects in JSON
+                'postType' => get_post_type(),
                 'title' => get_the_title(),
                 'permalink' => get_the_permalink(),
+                'author' => get_the_author(),
                 'ID' => get_the_ID()
                 ));   
             }

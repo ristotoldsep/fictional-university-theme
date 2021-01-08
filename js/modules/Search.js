@@ -54,30 +54,53 @@ class Search { //Creating the class
     //JSON FETCH CALL
     getResults () { //Method gets valled by typingTimer
 
-        // $.when(one, two).then((one, two) => { });
-
-        //USING SYNC AND ASYNC !!!!!!!!!!!!!!!!!
-        $.when( //FIRST GETTING BOTH JSON REQUESTS AT THE SAME TIME
-                $.getJSON(universityData.root_url + "/wp-json/wp/v2/posts?search=" + this.searchField.val()),
-                $.getJSON(universityData.root_url + "/wp-json/wp/v2/pages?search=" + this.searchField.val())
-        ).then((posts, pages) => { //WHEN REQ'S ARE DONE, SHOW SEARCH RESULTS
-
-                const combinedResults = posts[0].concat(pages[0]); /*CONCAT COMBINES ARRAYS, so all the post types. 
-                when req also passes other info to "then" than just JSON (like is req successful etc), so we use [0], which means we want only JSON data    */
-
-                this.resultsDiv.html(` 
+        //Since we made our own custom REST API route and URL, we dont need Async function when().then() anymore! (old code below)
+        $.getJSON(universityData.root_url + "/wp-json/university/v1/search?term=" + this.searchField.val(), (results) => {
+            this.resultsDiv.html(`
+                <div class="row">
+                    <div class="one-third">
                         <h2 class="search-overlay__section-title">General Information</h2>
 
-                        ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches my brudda</p>'}
+                        ${results.generalInfo.length ? '<ul class="link-list min-list">' : '<p>No matches my brudda</p>'}
                         
-                        ${combinedResults.map((item) => `<li><a href="${ item.link }">${ item.title.rendered }</a> ${ item.type == 'post' ? `by ${item.authorName}` : '' }</li>`).join('') } 
+                        ${results.generalInfo.map((item) => `<li><a href="${item.permalink}">${item.title}</a> ${item.postType == 'post' ? `by ${item.author}` : ''}</li>`).join('')} 
 
-                        ${combinedResults.length ? '</ul>' : ''}
-                    `);
-                this.isSpinnerVisible = false; //Reset state 
-            }, () => { //ERROR HANDLING 
-                this.resultsDiv.html('<h4>Unexpected error, please try again.</h4>');
-            }); 
+                        ${results.generalInfo.length ? '</ul>' : ''}
+                    </div>
+                    <div class="one-third">
+                        <h2 class="search-overlay__section-title">Programs</h2>
+                    </div>
+                    <div class="one-third">
+                        <h2 class="search-overlay__section-title">Professors</h2>
+
+                        <h2 class="search-overlay__section-title">Events</h2>
+                    </div>
+                </div>
+            `);
+        })
+
+        //USING SYNC AND ASYNC !!!!!!!!!!!!!!!!!  // $.when(one, two).then((one, two) => { });
+        // $.when( //FIRST GETTING BOTH JSON REQUESTS AT THE SAME TIME
+        //         $.getJSON(universityData.root_url + "/wp-json/wp/v2/posts?search=" + this.searchField.val()),
+        //         $.getJSON(universityData.root_url + "/wp-json/wp/v2/pages?search=" + this.searchField.val())
+        // ).then((posts, pages) => { //WHEN REQ'S ARE DONE, SHOW SEARCH RESULTS
+
+        //         const combinedResults = posts[0].concat(pages[0]); /*CONCAT COMBINES ARRAYS, so all the post types. 
+        //         when req also passes other info to "then" than just JSON (like is req successful etc), so we use [0], which means we want only JSON data    */
+
+        //         this.resultsDiv.html(` 
+        //                 <h2 class="search-overlay__section-title">General Information</h2>
+
+        //                 ${combinedResults.length ? '<ul class="link-list min-list">' : '<p>No matches my brudda</p>'}
+                        
+        //                 ${combinedResults.map((item) => `<li><a href="${ item.link }">${ item.title.rendered }</a> ${ item.type == 'post' ? `by ${item.authorName}` : '' }</li>`).join('') } 
+
+        //                 ${combinedResults.length ? '</ul>' : ''}
+        //             `);
+        //         this.isSpinnerVisible = false; //Reset state 
+        //     }, () => { //ERROR HANDLING 
+        //         this.resultsDiv.html('<h4>Unexpected error, please try again.</h4>');
+        //     }); 
 
         /* this.resultsDiv.html("<h1>Testing hahaha</h1>");*/
         // $.getJSON(url, fx) -> it wants an url, and a function what to do with the data == JQUERY METHOD!!!!!!!!!!!!! (json to html)
