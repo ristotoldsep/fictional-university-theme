@@ -29,7 +29,9 @@
             </div>
 
             <div class="generic-content">
-                <?php the_content( );?>
+                <?php /* the_content( ); */  
+                  the_field('main_body_content'); // Comes from custom fields! (So WP search would not look through content (does it by default))
+                ?>
             </div>
 
             <?php 
