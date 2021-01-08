@@ -3,7 +3,7 @@
         the_post(); 
        // print_r(get_field('page_banner_background_image'));
         
-       // IF THERE IS A BG IMAGE INSERTED FROM DASHBOARD, PASS THAT TO FX, ELSE PASS DEFAULT EVENTS PIC
+       // IF THERE IS A BG IMAGE INSERTED FROM DASHBOARD CUSTOM FIELD, PASS THAT TO FX, ELSE PASS DEFAULT EVENTS PIC
         if (get_field('page_banner_background_image')) { 
             $customPic = get_field('page_banner_background_image')['sizes']['pageBanner'];
             //print_r($customPic);
@@ -11,6 +11,7 @@
             $customPic = get_theme_file_uri('/images/events.jpg');
         }
 
+        //function in functions.php
         pageBanner(array(
             'photo' => $customPic
         )); //DONT NEED ANY ARGUMENTS BECAUSE THE TITLE IS WORDPRESS DEFAULT
@@ -49,7 +50,23 @@
                 echo '</ul>';
                 }
 
-            
+             //====================
+              wp_reset_postdata(); //SO EVENTS WOULD NOT DISAPPEAR //Because relates professors changes the page ID, can check with the_ID();
+              //====================
+              $relatedInstitutions = get_field('related_institution');
+              //print_r($relatedInstitutions); //ARRAY!
+
+              if ($relatedInstitutions) {
+                echo '<hr class="section-break">';
+                echo '<h2 class="headline headline--medium">Related Institutions:</h2>';
+                echo '<ul class="link-list min-list">';
+
+                foreach($relatedInstitutions as $institution) { ?>
+                    <li><a href="<?php echo get_the_permalink($institution); ?>"><?php echo get_the_title($institution); ?></a></li>
+              <?php }
+                echo '</ul>'; 
+              }
+                
             ?>
                 
         </div>

@@ -1,4 +1,7 @@
 <?php 
+
+    require get_theme_file_path('/includes/search-route.php'); //Importing custom REST API creating functions, to not bloat this file
+
     //==========================
     //CUSTOMIZING THE REST API
     //==========================
