@@ -37,7 +37,9 @@
            'institutions' => array()
        );
 
-    
+       //CREATING CUSTOM JSON - Main query for all data - NO RELATIONSHIPS YET (Look next fx)
+
+       //CLASSIC WORDPRESS LOOP (while)
        while($mainQuery->have_posts()) { //Loop length = number of professors
             $mainQuery->the_post();
             
@@ -47,39 +49,73 @@
                 'title' => get_the_title(),
                 'permalink' => get_the_permalink(),
                 'author' => get_the_author(),
-                'ID' => get_the_ID()
                 ));   
             }
             if (get_post_type() == 'professor') {
                 array_push($results['professors'], array( //Output the combined array of objects in JSON
                 'title' => get_the_title(),
                 'permalink' => get_the_permalink(),
-                'ID' => get_the_ID()
+                'image' => get_the_post_thumbnail_url(0, 'professorLandscape')
                 ));   
             }
             if (get_post_type() == 'program') {
                 array_push($results['programs'], array( //Output the combined array of objects in JSON
                 'title' => get_the_title(),
-                'permalink' => get_the_permalink(),
-                'ID' => get_the_ID()
+                'permalink' => get_the_permalink()
                 ));   
             }
             if (get_post_type() == 'event') {
+                $eventDate = new DateTime(get_field('event_date')); //Creating new object that uses DateTime class as a blueprint
+                $description = null;
+                if (has_excerpt()) { //If the post has handmade custom excerpt
+                    $description = get_the_excerpt(); //Display it
+                } else {
+                    $description = wp_trim_words(get_the_content(), 18); //first 18 words 
+                } 
+
                 array_push($results['events'], array( //Output the combined array of objects in JSON
                 'title' => get_the_title(),
                 'permalink' => get_the_permalink(),
-                'ID' => get_the_ID()
+                'month' => $eventDate->format('M'),
+                'day' => $eventDate->format('d'),
+                'description' => $description 
                 ));   
             }
             if (get_post_type() == 'institution') {
                 array_push($results['institutions'], array( //Output the combined array of objects in JSON
                 'title' => get_the_title(),
-                'permalink' => get_the_permalink(),
-                'ID' => get_the_ID()
+                'permalink' => get_the_permalink()
                 ));   
             }
        }
-       return $results; //Return the associative array with JSON data
+
+       //Query for the relationships between post types
+       $programRelationshipQuery = new WP_Query(array(
+           'post_type' => 'professor',
+           'meta_query' => array(
+               array(
+                    'key' => 'related_programs',
+                    'compare' => 'LIKE',
+                    'value' => '"59"'
+               )
+            )
+        ));
+
+        while ($programRelationshipQuery->have_posts()) {
+            $programRelationshipQuery->the_post();
+
+            if (get_post_type() == 'professor') {
+                array_push($results['professors'], array( //Output the combined array of objects in JSON
+                'title' => get_the_title(),
+                'permalink' => get_the_permalink(),
+                'image' => get_the_post_thumbnail_url(0, 'professorLandscape') //0 = default thumbnail
+                ));   
+            }
+        }
+
+        $results['professors'] = array_values(array_unique($results['professors'], SORT_REGULAR)); //REMOVING DUPLICATE SEARCH RESULTS (cause both main query and relationship query can output professors) (array_values removes the indexes array_unique creates in JSON)
+        
+        return $results; //Return the associative array with JSON data
     }
 
 
