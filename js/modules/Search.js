@@ -189,6 +189,8 @@ class Search { //Creating the class
         setTimeout(() => { this.searchField.focus(); }, 301); //Setting timeout to give CSS time to load (otherwise the instant focus would not work)
         this.isOverlayOpen = true;
         //console.log(this.isOverlayOpen);
+
+        return false; //this will prevent the default behavior of a or link elements = IF JS ENABLED, DONT GO TO FALLBACK SEARCH PAGE!
     }
 
     closeOverlay() {
