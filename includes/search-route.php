@@ -61,7 +61,8 @@
             if (get_post_type() == 'program') {
                 array_push($results['programs'], array( //Output the combined array of objects in JSON
                 'title' => get_the_title(),
-                'permalink' => get_the_permalink()
+                'permalink' => get_the_permalink(),
+                'id' => get_the_ID()
                 ));   
             }
             if (get_post_type() == 'event') {
@@ -89,31 +90,50 @@
             }
        }
 
-       //Query for the relationships between post types
-       $programRelationshipQuery = new WP_Query(array(
-           'post_type' => 'professor',
-           'meta_query' => array(
-               array(
-                    'key' => 'related_programs',
-                    'compare' => 'LIKE',
-                    'value' => '"59"'
-               )
-            )
-        ));
+       //CUSTOM QUERY - If there are any PROFESSORS that are related to PROGRAMS (search for programs)
+       if ($results['programs']) { 
+            //CREATING array to pass it to $programRelationshipQuery
+            $programsMetaQuery = array('relation' => 'OR');
 
-        while ($programRelationshipQuery->have_posts()) {
-            $programRelationshipQuery->the_post();
-
-            if (get_post_type() == 'professor') {
-                array_push($results['professors'], array( //Output the combined array of objects in JSON
-                'title' => get_the_title(),
-                'permalink' => get_the_permalink(),
-                'image' => get_the_post_thumbnail_url(0, 'professorLandscape') //0 = default thumbnail
-                ));   
+            foreach($results['programs'] as $item) {
+                array_push($programsMetaQuery, array(
+                            'key' => 'related_programs',
+                            'compare' => 'LIKE',
+                            'value' => '"' . $item['id'] . '"'
+                    ));
             }
-        }
 
-        $results['professors'] = array_values(array_unique($results['professors'], SORT_REGULAR)); //REMOVING DUPLICATE SEARCH RESULTS (cause both main query and relationship query can output professors) (array_values removes the indexes array_unique creates in JSON)
+            //Custom Query for the relationships between post types [Programs and professors]
+            $programRelationshipQuery = new WP_Query(array(
+                'post_type' => 'professor',
+                'meta_query' => $programsMetaQuery
+            
+            /*   array( BETTER CODE ABOVE (SO WE CAN HAVE AS MANY RELATED PROGRAMS AS NEEDED)
+                'relation' => 'OR', //by default, WP wants to consider all of the arrays, so we set relation to OR
+                array(
+                        'key' => 'related_programs',
+                        'compare' => 'LIKE',
+                        'value' => '"' . $results['programs'][0]['id'] . '"'
+                )
+                ) */
+            ));
+
+            while ($programRelationshipQuery->have_posts()) {
+                $programRelationshipQuery->the_post();
+
+                if (get_post_type() == 'professor') {
+                    array_push($results['professors'], array( //Output the combined array of objects in JSON
+                    'title' => get_the_title(),
+                    'permalink' => get_the_permalink(),
+                    'image' => get_the_post_thumbnail_url(0, 'professorLandscape') //0 = default thumbnail
+                    ));   
+                }
+            }
+
+            $results['professors'] = array_values(array_unique($results['professors'], SORT_REGULAR)); //REMOVING DUPLICATE SEARCH RESULTS (cause both main query and relationship query can output professors) (array_values removes the indexes array_unique creates in JSON)
+       }
+
+       
         
         return $results; //Return the associative array with JSON data
     }
