@@ -9,8 +9,12 @@
         //1st argument = post type that you want to customize
         //2nd argument = second argument is whatever you want to name the new field (property to JSON)
         //3rd argument = array that describes how we want to manage this field
-        register_rest_field('post', 'authorName', array(
+        register_rest_field('post', 'authorName', array( //Adding the post authorName property to REST API JSON
             'get_callback' => function() { return get_the_author(); }
+        ));
+
+        register_rest_field('note', 'userNoteCount', array( //Count the notes a user currently has
+            'get_callback' => function() { return count_user_posts(get_current_user_id(), 'note'); }
         ));
     }
 
@@ -214,15 +218,16 @@
 
     //Forcing note posts to be private, filtering the post, SECURITY
     //Filtering HOOK - intercepting a request right before the data gets saved into the database.
-    add_filter('wp_insert_post_data', 'makeNotePrivate');
+    add_filter('wp_insert_post_data', 'makeNotePrivate', 10, 2); //10 - priority (in case several same filter functions), 2 - we want this function to be able to work with two parameters.
 
     //LIKE FILTERING DIRTY WATER, IT GETS PaSSED AS AN ARGUMENT, WE CLEAN IT AND RETURN CLEAN WATER
-    function makeNotePrivate($data) {
+    function makeNotePrivate($data, $postarray) { //wp_insert_post_data passes both
         
         //Since wp_insert_post_data runs for all post types, we only want to select "note"
         if ($data['post_type'] == 'note') {
 
-            if(count_user_posts(get_current_user_id(), 'note') > 5) {
+            //Limiting the number of notes user can enter
+            if(count_user_posts(get_current_user_id(), 'note') > 5 AND !$postarray['ID']) { //If over five and user tries to enter a NEW note (not change existing one, new note does not have ID yet)
                 die("You have reached your note limit.");
             }
 
