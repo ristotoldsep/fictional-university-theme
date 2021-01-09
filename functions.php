@@ -82,7 +82,9 @@
         //CREATING DYNAMIC flexible RELATIVE URL FOR API CALLS (creates variable universityData [check from chrome inspect element console bottom! & Search.js dynamic url in API call])
         //Takes 3 arguments: 1) The js file u r trying to make flexible 2) made up variable 3) array
         wp_localize_script('university_main_javascript', 'universityData', array(
-            'root_url' => get_site_url() //fx will return url for current WP installation
+            'root_url' => get_site_url(), //fx will return url for current WP installation
+            'nonce' => wp_create_nonce('wp_rest') //This is for enablind CRUD actions
+            /* Whenever we successfully log into WordPress if we check the view source of the page there will be a secret property named nonce That equals a randomly generated number that WordPress creates just for our user session. */
         ));
     }
     //First is wp function, second is our made up name = ACTION HOOKS
