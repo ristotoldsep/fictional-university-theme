@@ -211,4 +211,33 @@
         wp_enqueue_style('custom-google-font', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
         wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.b8802cd0aa92babbb1b0.css'));
     }
+
+    //Forcing note posts to be private, filtering the post, SECURITY
+    //Filtering HOOK - intercepting a request right before the data gets saved into the database.
+    add_filter('wp_insert_post_data', 'makeNotePrivate');
+
+    //LIKE FILTERING DIRTY WATER, IT GETS PaSSED AS AN ARGUMENT, WE CLEAN IT AND RETURN CLEAN WATER
+    function makeNotePrivate($data) {
+        
+        //Since wp_insert_post_data runs for all post types, we only want to select "note"
+        if ($data['post_type'] == 'note') {
+
+            if(count_user_posts(get_current_user_id(), 'note') > 5) {
+                die("You have reached your note limit.");
+            }
+
+            //Sanitizing the input - NO HTML or JS Scripts will be executed!
+            $data['post_title'] = sanitize_text_field($data['post_title']);
+            $data['post_content'] = sanitize_textarea_field($data['post_content']);
+
+        }
+        //Setting the note post type to be private by default
+        if ($data['post_type'] == 'note' AND $data['post_status'] != 'trash') {
+
+            $data['post_status'] = "private";
+
+        }
+        return $data; //returning filtered water
+    }
+
 ?>

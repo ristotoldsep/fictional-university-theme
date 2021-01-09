@@ -70,7 +70,8 @@ class MyNotes {
         const ourNewNote = { /* WP rest API is looking for very specific property names */
             'title': $(".new-note-title").val(), //updating the note title
             'content': $(".new-note-body").val(), //Updating note body content
-            'status': 'publish' //Cause by default the status is draft, and the note won't appear on the front-end
+            'status': 'publish' //Cause by default the status is draft, and the note won't appear on the front-end 
+            //Could also set to 'private' etc, but we are using filtering hook which is safer (in functions.php)
         }
 
         $.ajax({ //Ajax method is a great option when you want to be able to control what type of request you're sending //POST, DELETE etc..
