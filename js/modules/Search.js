@@ -1,6 +1,6 @@
 import $ from 'jquery'; //ADDS JQUERY 
 
-//OOP JS FOR LIVE SEARCH
+//OOP JS FOR LIVE SEARCH          !!!
 //========================================================================
 class Search { //Creating the class
     //1. Constructor is used to describe and create/initiate our object

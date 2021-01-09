@@ -73,8 +73,8 @@
             wp_enqueue_script('university_main_javascript', 'http://localhost:3000/bundled.js', NULL, '1.0', true); //ADDED AFTER AUTOMATION ONLY FOR DEVELOPMENT
         } else { //FILES BUNDLED FOR THE PUBLIC VIEW
             wp_enqueue_script('our_vendors_js', get_theme_file_uri('/bundled-assets/vendors~scripts.9678b4003190d41dd438.js'), NULL, '1.0', true);
-            wp_enqueue_script('university_main_javascript', get_theme_file_uri('/bundled-assets/scripts.f754162e98180e2897f0.js'), NULL, '1.0', true);
-            wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.f754162e98180e2897f0.css'));
+            wp_enqueue_script('university_main_javascript', get_theme_file_uri('/bundled-assets/scripts.b8802cd0aa92babbb1b0.js'), NULL, '1.0', true);
+            wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.b8802cd0aa92babbb1b0.css'));
         }
     
         //wp_enqueue_style('university_main_styles', get_stylesheet_uri()); //REMOVED AFTER NODE.js AUTOMATION //Loading CSS file with WP function
@@ -182,5 +182,31 @@
         if (count($ourCurrentUser->roles) == 1 AND $ourCurrentUser->roles[0] == 'subscriber') {
             show_admin_bar(false);
         }
+    }
+
+    //==========================
+    //CUSTOMIZE Login Screen
+    //==========================
+
+    add_filter('login_headerurl', 'ourHeaderUrl');
+
+    //Change the url the login image points to
+    function ourHeaderUrl() {
+        return esc_url(site_url('/'));
+    }
+    add_filter('login_headertitle', 'ourLoginTitle');
+    
+    //Custom Title for login screen
+    function ourLoginTitle() {
+        //return get_option('blogname');
+        return get_bloginfo('name');
+    }
+
+    //Customize the CSS
+    add_action('login_enqueue_scripts', 'ourLoginCSS');
+
+    function ourLoginCSS() {
+        wp_enqueue_style('custom-google-font', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
+        wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.b8802cd0aa92babbb1b0.css'));
     }
 ?>
