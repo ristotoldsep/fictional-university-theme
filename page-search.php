@@ -1,4 +1,4 @@
-<?php get_header();  //POWERS ABOUT US PAGE!!!!!!
+<?php get_header();  //POWERS FALLBACK JS SEARCH BAR PAGE!!!!!!
 
     while(have_posts()) {
         the_post(); 
