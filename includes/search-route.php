@@ -1,7 +1,7 @@
 <?php 
 
     //==========================
-    //CUSTOMIZING THE REST API / CREATING OUR OWN CUSTOM URL ROUTES to have more control
+    //CUSTOMIZING THE REST API / CREATING OUR OWN CUSTOM URL ROUTES to have more control //CREATING CUSTOM REST API " READ " ENDPOINT
     //=========================
     add_action('rest_api_init', 'universityRegisterSearch');
 
@@ -13,6 +13,7 @@
         register_rest_route('university/v1', 'search', array( //university/v1/search/...
             'methods' => WP_REST_SERVER::READABLE, //means = 'GET', but just in case if some web hosts don't know what GET is
             'callback' => 'universitySearchResults' //calls this function, and passes along $data about the current request that someone is sending
+            /* callback is just a function that we want to run when a request is sent to one of these routes */
         ));
     }
 

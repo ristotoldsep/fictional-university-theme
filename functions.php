@@ -1,6 +1,7 @@
 <?php 
 
-    require get_theme_file_path('/includes/search-route.php'); //Importing custom REST API creating functions, to not bloat this file
+    require get_theme_file_path('/includes/like-route.php'); //Importing custom REST API creating functions, to not bloat this file //POST and DELETE endpoints for likes
+    require get_theme_file_path('/includes/search-route.php'); //Importing custom REST API creating functions, to not bloat this file //READ endpoints for search
 
     //==========================
     //CUSTOMIZING THE REST API
