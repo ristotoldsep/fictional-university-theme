@@ -40,7 +40,7 @@ class MyNotes {
         });
     }
 
-    updateNote(event) { //SENDING DELETE REQ TO REST API WITH AJAX
+    updateNote(event) { //SENDING POST REQ TO REST API WITH AJAX
 
         const thisNote = $(event.target).parents("li"); //To get info which delete button got clicked on
 

@@ -28,31 +28,39 @@
                             ));
                             // print_r($likeCount);
 
-                            $existStatus = 'no'; //Has user liked the professor initial state
+                            $existStatus = 'no'; //Has user liked the professor initial state //HEART ICON IS NOT FILLED
 
-                            //This query will only output something if the current user has already liked the professor with this ID
-                            $existQuery = new WP_Query(array(
-                                'author' => get_current_user_id(),
-                                'post_type' => 'like',
-                                'meta_query' => array(
-                                    array(
-                                        'key' => 'liked_professor_id',
-                                        'compare' => '=',
-                                        'value' => get_the_ID()
+                            //Only if user is logged in, can the user see if he has liked the professor
+                            if (is_user_logged_in()) {
+                                   //This query will only output something if the current user has already liked the professor with this ID
+                                $existQuery = new WP_Query(array(
+                                    'author' => get_current_user_id(),
+                                    'post_type' => 'like',
+                                    'meta_query' => array(
+                                        array(
+                                            'key' => 'liked_professor_id',
+                                            'compare' => '=',
+                                            'value' => get_the_ID()
+                                        )
                                     )
-                                )
-                            ));
+                                ));
                             
-                            if ($existQuery->found_posts) { //if the current user has liked the professor
-                                $existStatus = 'yes';
+                                if ($existQuery->found_posts) { //if the current user has liked the professor
+                                    $existStatus = 'yes'; //HEART IS FILLED 
+                                }
                             }
+
+                         
                         ?>
 
-                        <!-- LIKE COUNTER -->
-                        <span class="like-box" data-exists="<?php echo $existStatus; ?>">
+                        <!-- LIKE COUNTER BOX-->
+                        <span class="like-box" 
+                        data-likeid="<?php echo $existQuery->posts[0]->ID; // id number of the like post that we want to delete , for toggling like status?>" 
+                        data-professorid="<?php the_ID(); ?>" 
+                        data-exists="<?php echo $existStatus; //YES or NO, filling the heart ICON ?>">
                             <i class="fa fa-heart-o" aria-hidden="true"></i>
                             <i class="fa fa-heart" aria-hidden="true"></i>
-                            <span><n class="like-count"><?php echo $likeCount->found_posts ?></n></span>
+                            <span class="like-count"><?php echo $likeCount->found_posts; ?></span>
                         </span>
 
                         <!-- Professor content -->

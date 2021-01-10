@@ -78,8 +78,8 @@
             wp_enqueue_script('university_main_javascript', 'http://localhost:3000/bundled.js', NULL, '1.0', true); //ADDED AFTER AUTOMATION ONLY FOR DEVELOPMENT
         } else { //FILES BUNDLED FOR THE PUBLIC VIEW
             wp_enqueue_script('our_vendors_js', get_theme_file_uri('/bundled-assets/vendors~scripts.9678b4003190d41dd438.js'), NULL, '1.0', true);
-            wp_enqueue_script('university_main_javascript', get_theme_file_uri('/bundled-assets/scripts.b8802cd0aa92babbb1b0.js'), NULL, '1.0', true);
-            wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.b8802cd0aa92babbb1b0.css'));
+            wp_enqueue_script('university_main_javascript', get_theme_file_uri('/bundled-assets/scripts.272e33bd28c5857fe180.js'), NULL, '1.0', true);
+            wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.272e33bd28c5857fe180.css'));
         }
     
         //wp_enqueue_style('university_main_styles', get_stylesheet_uri()); //REMOVED AFTER NODE.js AUTOMATION //Loading CSS file with WP function
@@ -214,9 +214,12 @@
 
     function ourLoginCSS() {
         wp_enqueue_style('custom-google-font', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
-        wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.b8802cd0aa92babbb1b0.css'));
+        wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.272e33bd28c5857fe180.css'));
     }
 
+    //==========================
+    //Forcing NOTE posts to be private, filtering the post, SECURITY
+    //==========================
     //Forcing note posts to be private, filtering the post, SECURITY
     //Filtering HOOK - intercepting a request right before the data gets saved into the database.
     add_filter('wp_insert_post_data', 'makeNotePrivate', 10, 2); //10 - priority (in case several same filter functions), 2 - we want this function to be able to work with two parameters.
