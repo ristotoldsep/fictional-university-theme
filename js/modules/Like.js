@@ -1,4 +1,74 @@
-import $ from "jquery";
+
+//COMMENTED CODE WITH JQUERY IS BELOW
+import axios from "axios"
+
+class Like {
+  constructor() {
+      //WE ONLY NEED TO RUN THIS JS IF WE ARE ON A PAGE THAT CONTAINS THE ELEMENT LIKE BOX
+    if (document.querySelector(".like-box")) {
+      axios.defaults.headers.common["X-WP-Nonce"] = universityData.nonce
+      this.events()
+    }
+  }
+
+  events() {
+    document.querySelector(".like-box").addEventListener("click", e => this.ourClickDispatcher(e))
+  }
+
+  // methods
+  ourClickDispatcher(e) {
+    let currentLikeBox = e.target
+    while (!currentLikeBox.classList.contains("like-box")) {
+      currentLikeBox = currentLikeBox.parentElement
+    }
+
+    if (currentLikeBox.getAttribute("data-exists") == "yes") {
+      this.deleteLike(currentLikeBox)
+    } else {
+      this.createLike(currentLikeBox)
+    }
+  }
+
+  async createLike(currentLikeBox) {
+    try {
+      const response = await axios.post(universityData.root_url + "/wp-json/university/v1/manageLike", { "professorID": currentLikeBox.getAttribute("data-professor") })
+      if (response.data != "Only logged in users can create a like.") {
+        currentLikeBox.setAttribute("data-exists", "yes")
+        var likeCount = parseInt(currentLikeBox.querySelector(".like-count").innerHTML, 10)
+        likeCount++
+        currentLikeBox.querySelector(".like-count").innerHTML = likeCount
+        currentLikeBox.setAttribute("data-like", response.data)
+      } else {
+          alert("You must be logged in to like a professor!");
+      }
+      console.log(response.data)
+    } catch (e) {
+      console.log("Sorry")
+    }
+  }
+
+  async deleteLike(currentLikeBox) {
+    try {
+      const response = await axios({
+        url: universityData.root_url + "/wp-json/university/v1/manageLike",
+        method: 'delete',
+        data: { "like": currentLikeBox.getAttribute("data-like") },
+      })
+      currentLikeBox.setAttribute("data-exists", "no")
+      var likeCount = parseInt(currentLikeBox.querySelector(".like-count").innerHTML, 10)
+      likeCount--
+      currentLikeBox.querySelector(".like-count").innerHTML = likeCount
+      currentLikeBox.setAttribute("data-like", "")
+      console.log(response.data)
+    } catch (e) {
+      console.log(e)
+    }
+  }
+}
+
+export default Like
+
+/* import $ from "jquery";
 
 class Like {
     constructor() {
@@ -42,7 +112,7 @@ class Like {
 
                 currentLikeBox.attr("data-like", response); //Setting the data like attr in html on the fly, response returs the id nr of the new like post!
 
-                // console.log("Like added!!!!!!");
+                console.log("Like added!!!!!!");
                 console.log(response);
             },
             error: (response) => {
@@ -72,7 +142,7 @@ class Like {
 
                 currentLikeBox.attr("data-like", ''); //Setting the data like attr in html on the fly, response returs the id nr of the new like post!
 
-                console.log("Like deleted!!!!!!");
+                //console.log("Like deleted!!!!!!");
                 console.log(response);
             },
             error: (response) => {
@@ -83,73 +153,5 @@ class Like {
     }
 }
 
-export default Like;
+export default Like; */
 
-/* 
-jQUERY FREE LIKE JS CODE with axios
-
-import axios from "axios"
-
-class Like {
-  constructor() {
-    if (document.querySelector(".like-box")) {
-      axios.defaults.headers.common["X-WP-Nonce"] = universityData.nonce
-      this.events()
-    }
-  }
-
-  events() {
-    document.querySelector(".like-box").addEventListener("click", e => this.ourClickDispatcher(e))
-  }
-
-  // methods
-  ourClickDispatcher(e) {
-    let currentLikeBox = e.target
-    while (!currentLikeBox.classList.contains("like-box")) {
-      currentLikeBox = currentLikeBox.parentElement
-    }
-
-    if (currentLikeBox.getAttribute("data-exists") == "yes") {
-      this.deleteLike(currentLikeBox)
-    } else {
-      this.createLike(currentLikeBox)
-    }
-  }
-
-  async createLike(currentLikeBox) {
-    try {
-      const response = await axios.post(universityData.root_url + "/wp-json/university/v1/manageLike", { "professorId": currentLikeBox.getAttribute("data-professor") })
-      if (response.data != "Only logged in users can create a like.") {
-        currentLikeBox.setAttribute("data-exists", "yes")
-        var likeCount = parseInt(currentLikeBox.querySelector(".like-count").innerHTML, 10)
-        likeCount++
-        currentLikeBox.querySelector(".like-count").innerHTML = likeCount
-        currentLikeBox.setAttribute("data-like", response.data)
-      }
-      console.log(response.data)
-    } catch (e) {
-      console.log("Sorry")
-    }
-  }
-
-  async deleteLike(currentLikeBox) {
-    try {
-      const response = await axios({
-        url: universityData.root_url + "/wp-json/university/v1/manageLike",
-        method: 'delete',
-        data: { "like": currentLikeBox.getAttribute("data-like") },
-      })
-      currentLikeBox.setAttribute("data-exists", "no")
-      var likeCount = parseInt(currentLikeBox.querySelector(".like-count").innerHTML, 10)
-      likeCount--
-      currentLikeBox.querySelector(".like-count").innerHTML = likeCount
-      currentLikeBox.setAttribute("data-like", "")
-      console.log(response.data)
-    } catch (e) {
-      console.log(e)
-    }
-  }
-}
-
-export default Like
- */

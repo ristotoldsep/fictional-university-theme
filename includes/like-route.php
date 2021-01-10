@@ -48,14 +48,15 @@ function createLike($data) {
                     'liked_professor_id' => $professor
                 )
             )); 
+            return 'Like added!';
         } else {
             die("ALREADY LIKED/Invalid professor id");
         }
 
     } else {
-        die("Only logged in users can create a like");
+        die("Only logged in users can create a like.");
     }
-
+    
 }
 
 function deleteLike($data) {

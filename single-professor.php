@@ -55,14 +55,14 @@
 
                         <!-- LIKE COUNTER BOX-->
                         <span class="like-box" 
-                        data-likeid="<?php echo $existQuery->posts[0]->ID; // id number of the like post that we want to delete , for toggling like status?>" 
-                        data-professorid="<?php the_ID(); ?>" 
+                        data-like="<?php echo $existQuery->posts[0]->ID; // id number of the like post that we want to delete , for toggling like status?>" 
+                        data-professor="<?php the_ID(); ?>" 
                         data-exists="<?php echo $existStatus; //YES or NO, filling the heart ICON ?>">
                             <i class="fa fa-heart-o" aria-hidden="true"></i>
                             <i class="fa fa-heart" aria-hidden="true"></i>
                             <span class="like-count"><?php echo $likeCount->found_posts; ?></span>
+                            
                         </span>
-
                         <!-- Professor content -->
                         <?php the_content(); ?>
                     </div>
