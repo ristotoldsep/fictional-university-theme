@@ -249,4 +249,12 @@
         return $data; //returning filtered water
     }
 
-?>
+    //==========================
+    //EXCLUDING NODE MODULES etc from deployment
+    //==========================
+    add_filter('ai1wm_exclude_content_from_export', 'ignoreCertainFiles');
+
+    function ignoreCertainFiles($exclude_filters) {
+        $exclude_filters[] = 'themes/fictional-university-theme/node_modules';
+        return $exclude_filters;
+    }
