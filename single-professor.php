@@ -1,4 +1,4 @@
-<?php get_header(); 
+<?php get_header(); //THIS IS THE PROFESSOR SINGLE PAGE
     while(have_posts()) {
         the_post(); 
     
@@ -13,6 +13,49 @@
                         <?php the_post_thumbnail('professorPortrait'); ?>
                     </div>
                     <div class="two-thirds">
+
+                        <?php 
+                            //Querying how many likes belong to the professor ID
+                            $likeCount = new WP_Query(array(
+                                'post_type' => 'like',
+                                'meta_query' => array(
+                                    array(
+                                        'key' => 'liked_professor_id',
+                                        'compare' => '=',
+                                        'value' => get_the_ID()
+                                    )
+                                )
+                            ));
+                            // print_r($likeCount);
+
+                            $existStatus = 'no'; //Has user liked the professor initial state
+
+                            //This query will only output something if the current user has already liked the professor with this ID
+                            $existQuery = new WP_Query(array(
+                                'author' => get_current_user_id(),
+                                'post_type' => 'like',
+                                'meta_query' => array(
+                                    array(
+                                        'key' => 'liked_professor_id',
+                                        'compare' => '=',
+                                        'value' => get_the_ID()
+                                    )
+                                )
+                            ));
+                            
+                            if ($existQuery->found_posts) { //if the current user has liked the professor
+                                $existStatus = 'yes';
+                            }
+                        ?>
+
+                        <!-- LIKE COUNTER -->
+                        <span class="like-box" data-exists="<?php echo $existStatus; ?>">
+                            <i class="fa fa-heart-o" aria-hidden="true"></i>
+                            <i class="fa fa-heart" aria-hidden="true"></i>
+                            <span><n class="like-count"><?php echo $likeCount->found_posts ?></n></span>
+                        </span>
+
+                        <!-- Professor content -->
                         <?php the_content(); ?>
                     </div>
                 </div>
